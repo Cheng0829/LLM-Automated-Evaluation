@@ -1,0 +1,113 @@
+No.0: STEM-electrical_engineer(注册电气工程师)数据集准确率: 29/42 = 69.05%
+
+No.1: STEM-metrology_engineer(注册计量师)数据集准确率: 22/29 = 75.86%
+
+No.2: STEM-college_programming(大学编程)数据集准确率: 38/42 = 90.48%
+
+No.3: STEM-computer_architecture(计算机组成)数据集准确率: 23/26 = 88.46%
+
+No.4: STEM-operating_system(操作系统)数据集准确率: 21/24 = 87.50%
+
+No.5: STEM-computer_network(计算机网络)数据集准确率: 23/24 = 95.83%
+
+No.6: STEM-discrete_mathematics(离散数学)数据集准确率: 11/21 = 52.38%
+
+No.7: STEM-probability_and_statistics(概率统计)数据集准确率: 20/23 = 86.96%
+
+No.8: STEM-advanced_mathematics(高等数学)数据集准确率: 14/24 = 58.33%
+
+No.9: STEM-college_chemistry(大学化学)数据集准确率: 27/29 = 93.10%
+
+No.10: STEM-college_physics(大学物理)数据集准确率: 21/24 = 87.50%
+
+No.11: STEM-veterinary_medicine(兽医学)数据集准确率: 26/28 = 92.86%
+
+No.12: STEM-high_school_biology(高中生物)数据集准确率: 24/24 = 100.00%
+
+No.13: STEM-high_school_chemistry(高中化学)数据集准确率: 24/24 = 100.00%
+
+No.14: STEM-high_school_physics(高中物理)数据集准确率: 23/24 = 95.83%
+
+No.15: STEM-high_school_mathematics(高中数学)数据集准确率: 16/23 = 69.57%
+
+No.16: STEM-middle_school_chemistry(初中化学)数据集准确率: 25/25 = 100.00%
+
+No.17: STEM-middle_school_physics(初中物理)数据集准确率: 24/24 = 100.00%
+
+No.18: STEM-middle_school_biology(初中生物)数据集准确率: 23/26 = 88.46%
+
+No.19: STEM-middle_school_mathematics(初中数学)数据集准确率: 23/24 = 95.83%
+
+类别STEM平均准确率: 457/530 = 86.23%
+
+No.20: Social_Science-teacher_qualification(教师资格)数据集准确率: 48/49 = 97.96%
+
+No.21: Social_Science-business_administration(工商管理)数据集准确率: 33/38 = 86.84%
+
+No.22: Social_Science-mao_zedong_thought(毛泽东思想和中国特色社会主义理论体系概论)数据集准确率: 29/29 = 100.00%
+
+No.23: Social_Science-marxism(马克思主义基本原理)数据集准确率: 22/24 = 91.67%
+
+No.24: Social_Science-college_economics(大学经济学)数据集准确率: 49/60 = 81.67%
+
+No.25: Social_Science-education_science(教育学)数据集准确率: 31/34 = 91.18%
+
+No.26: Social_Science-high_school_geography(高中地理)数据集准确率: 23/24 = 95.83%
+
+No.27: Social_Science-high_school_politics(高中政治)数据集准确率: 23/24 = 95.83%
+
+No.28: Social_Science-middle_school_geography(初中地理)数据集准确率: 16/17 = 94.12%
+
+No.29: Social_Science-middle_school_politics(初中政治)数据集准确率: 26/26 = 100.00%
+
+类别Social_Science平均准确率: 300/325 = 92.31%
+
+No.30: Humanity-professional_tour_guide(导游资格)数据集准确率: 33/34 = 97.06%
+
+No.31: Humanity-legal_professional(法律职业资格)数据集准确率: 24/28 = 85.71%
+
+No.32: Humanity-art_studies(艺术学)数据集准确率: 37/38 = 97.37%
+
+No.33: Humanity-chinese_language_and_literature(中国语言文学)数据集准确率: 23/28 = 82.14%
+
+No.34: Humanity-law(法学)数据集准确率: 25/29 = 86.21%
+
+No.35: Humanity-logic(逻辑学)数据集准确率: 26/27 = 96.30%
+
+No.36: Humanity-ideological_and_moral_cultivation(思想道德修养与法律基础)数据集准确率: 24/24 = 100.00%
+
+No.37: Humanity-modern_chinese_history(近代史纲要)数据集准确率: 26/28 = 92.86%
+
+No.38: Humanity-high_school_history(高中历史)数据集准确率: 23/25 = 92.00%
+
+No.39: Humanity-high_school_chinese(高中语文)数据集准确率: 24/24 = 100.00%
+
+No.40: Humanity-middle_school_history(初中历史)数据集准确率: 26/27 = 96.30%
+
+类别Humanity平均准确率: 291/312 = 93.27%
+
+No.41: Other-environmental_impact_assessment_engineer(环境影响评价工程师)数据集准确率: 32/36 = 88.89%
+
+No.42: Other-urban_and_rural_planner(注册城乡规划师)数据集准确率: 43/51 = 84.31%
+
+No.43: Other-fire_engineer(注册消防工程师)数据集准确率: 32/36 = 88.89%
+
+No.44: Other-physician(医师资格)数据集准确率: 46/54 = 85.19%
+
+No.45: Other-tax_accountant(税务师)数据集准确率: 47/54 = 87.04%
+
+No.46: Other-accountant(注册会计师)数据集准确率: 53/54 = 98.15%
+
+No.47: Other-civil_servant(公务员)数据集准确率: 48/52 = 92.31%
+
+No.48: Other-clinical_medicine(临床医学)数据集准确率: 25/27 = 92.59%
+
+No.49: Other-basic_medicine(基础医学)数据集准确率: 24/24 = 100.00%
+
+No.50: Other-plant_protection(植物保护)数据集准确率: 27/27 = 100.00%
+
+No.51: Other-sports_science(体育学)数据集准确率: 22/24 = 91.67%
+
+类别Other平均准确率: 399/439 = 90.89%
+
+总准确率: 1447/1606 = 90.10%

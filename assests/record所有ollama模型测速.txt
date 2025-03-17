@@ -1,0 +1,15 @@
+model: qwen2.5:0.5b-q4_K_M, speed: 346.98 token/s.
+model: qwen2.5:0.5b-instruct-fp16, speed: 89.08 token/s.
+model: qwen2.5:1.5b-q4_K_M, speed: 50.84 token/s.
+model: qwen2.5:1.5b-instruct-fp16, speed: 32.19 token/s.
+model: qwen2.5:3b-q4_K_M, speed: 71.48 token/s.
+model: qwen2.5:3b-instruct-q8_0, speed: 42.15 token/s.
+model: huihui_ai/qwen2.5-abliterate:7b-instruct-q4_K_M, speed: 29.46 token/s.
+model: qwen2.5:7b-q4_K_M, speed: 41.15 token/s.
+model: qwen2.5:7b-instruct-q5_K_M, speed: 26.28 token/s.
+model: gemma3:4b-it-q4_K_M, speed: 56.04 token/s.
+model: gemma3:4b-it-q8_0, speed: 38.72 token/s.
+model: gemma3:12b, speed: 10.87 token/s.
+model: deepseek-r1:1.5b-q4_K_M, speed: 130.0 token/s.
+model: deepseek-r1:1.5b-qwen-distill-fp16, speed: 71.63 token/s.
+model: deepseek-r1-7b-q4_K_M, speed: 47.01 token/s.model: phi4, speed: 7.37 token/s.
