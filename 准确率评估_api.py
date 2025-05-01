@@ -7,14 +7,12 @@ from datasets import load_dataset, concatenate_datasets
 
 provider_list = {
     "aliyun": {
-        # "api_key" : os.getenv("BALIYUN_API_KEY"),
-        "api_key" : "sk-973a8ecb703f48db906c3cf2ebe7b3b6",
+        "api_key" : os.getenv("BALIYUN_API_KEY"),
         "base_url" : "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "model_list": ["deepseek-v3", "deepseek-r1", "qwen-max-0125", "qwen-turbo-1101", "qwen-vl-max-0125", "qwq-plus"]
     },
     "bytedance": {
-        # "api_key" : os.getenv("BYTEDANCE_API_KEY"),
-        "api_key" : "6c693abd-8e7c-4227-abaa-972200f7e7d5",
+        "api_key" : os.getenv("BYTEDANCE_API_KEY"),
         "base_url" : "https://ark.cn-beijing.volces.com/api/v3",
         "model_list": ["deepseek-v3-241226", "deepseek-r1-250120", "doubao-1-5-pro-32k-250115", "doubao-1-5-pro-256k-250115"]
     },
