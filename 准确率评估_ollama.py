@@ -49,7 +49,7 @@ def llm(model, query, temperature=0, stream=True, encoding=tiktoken.encoding_for
             # system_prompt的token数：44，1606道题，1606*44=70664
             {
                 "role": "system",
-                "content": "你是一个做题专家。请完成下列单项选择题。 /no_think",
+                "content": "你是一个做题专家。请完成下列单项选择题。 /think",
             },
             {
                 "role": "user",
@@ -220,15 +220,15 @@ def test_split(model_name, is_inference=False):
             category_correct += correct
             category_total += total
             print(f"No.{order}: {category}-{task_list[i]}({task_chinese_name})数据集准确率: {correct}/{total} = {correct/total:.2%}")
-            with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
+            with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
                 f.write(f"No.{order}: {category}-{task_list[i]}({task_chinese_name})数据集准确率: {correct}/{total} = {correct/total:.2%}\n\n")
             order += 1
 
         print(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}")
-        with open(f"assests/{model_name_write}-no_think.txt", "a", encoding="utf-8") as f:
+        with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
             f.write(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}\n\n")
 
-    with open(f"assests/{model_name_write}-no_think.txt", "a", encoding="utf-8") as f:
+    with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
         f.write(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}\n\n")
     print(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}")
 
