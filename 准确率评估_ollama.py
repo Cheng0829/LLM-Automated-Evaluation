@@ -1,13 +1,40 @@
-import requests
-from datasets import load_dataset, concatenate_datasets
-import re, random, json
+from datasets import load_dataset, concatenate_datasets, Features, Value
+import re,requests, random, json, os, time, tiktoken, ollama
 from tqdm import tqdm
-import re, time, tiktoken, ollama
-from ollama import ChatResponse
-from ollama import Options
+from ollama import ChatResponse, Options
+import pandas as pd
+import numpy as np
 
+features_dev = Features({
+    'id': Value('int64'),
+    'question': Value('string'),
+    'A': Value('string'),
+    'B': Value('string'),
+    'C': Value('string'),
+    'D': Value('string'),
+    'answer': Value('string'),
+    'explanation': Value('string')
+})
+features_val = Features({
+    'id': Value('int64'),
+    'question': Value('string'),
+    'A': Value('string'),
+    'B': Value('string'),
+    'C': Value('string'),
+    'D': Value('string'),
+    'answer': Value('string')  # val 没有 explanation
+})
+features_test = Features({
+    'id': Value('int64'),
+    'question': Value('string'),
+    'A': Value('string'),
+    'B': Value('string'),
+    'C': Value('string'),
+    'D': Value('string')  # test 没有 answer 和 explanation
+})
 
-def llm(model, query, temperature=0.6, stream=True, encoding=tiktoken.encoding_for_model("gpt-4"), max_tokens=None):
+# pip install numpy pandas tiktoken  ollama datasets
+def llm(model, query, temperature=0, stream=True, encoding=tiktoken.encoding_for_model("gpt-4"), max_tokens=None):
     # return "A"
     options = Options(
         temperature=temperature,
@@ -22,7 +49,7 @@ def llm(model, query, temperature=0.6, stream=True, encoding=tiktoken.encoding_f
             # system_prompt的token数：44，1606道题，1606*44=70664
             {
                 "role": "system",
-                "content": "你是一个做题专家。请完成下列单项选择题。",
+                "content": "你是一个做题专家。请完成下列单项选择题。 /no_think",
             },
             {
                 "role": "user",
@@ -148,7 +175,7 @@ def test_split(model_name, is_inference=False):
     sum_correct = 0
     sum_total = 0
     order = 0
-            
+    folder_path = r"D:\Code\LLM-Automated-Evaluation\ceval-exam"
     for category in task_map:
         category_correct = 0
         category_total = 0
@@ -156,18 +183,18 @@ def test_split(model_name, is_inference=False):
         for i in range(0, len(task_list)):
             task_chinese_name = task_map[category][task_list[i]]
             task_list[i] = task_list[i].lower()
-            # try:
-            dataset_tmp = load_dataset(r"ceval/ceval-exam", name=task_list[i])
-            dataset = concatenate_datasets([dataset_tmp["dev"], dataset_tmp["val"]])
+            dev_file = pd.read_csv(os.path.join(folder_path, "dev", f"{task_list[i]}_dev.csv")).drop(columns=['explanation'])
+            val_file = pd.read_csv(os.path.join(folder_path, "val", f"{task_list[i]}_val.csv"))
+            dataset = pd.concat([dev_file, val_file], axis=0, ignore_index=True).values.tolist()
+
+            # dataset_tmp = load_dataset(r'ceval/ceval-exam', name=task_list[i])
+            # dataset = concatenate_datasets([dataset_tmp["dev"], dataset_tmp["val"]])
             # dataset = dataset_list[order]
             print(f"\nNo.{order}: {category}-{task_list[i]}({task_chinese_name})数据集加载完成, len(dataset)={len(dataset)}")
-            # except:
-                # print(f"\nNo.{order}: {category}-{task_list[i]}({task_chinese_name})数据集加载失败")
-                # continue
-            if is_inference:
-                # dataset只选取其中最多2条数据
-                random_indices = random.sample(range(len(dataset)), 2)
-                dataset = dataset.select(random_indices)
+            # if is_inference:
+            #     # dataset只选取其中最多2条数据
+            #     random_indices = random.sample(range(len(dataset)), 2)
+            #     dataset = dataset.select(random_indices)
 
             # 初始化统计变量
             correct = 0
@@ -175,7 +202,7 @@ def test_split(model_name, is_inference=False):
             for item in tqdm(dataset, desc=f"Processing"):
                 # try:
                 # 构造完整问题
-                user_prompt = f"{item['question']}\nA. {item['A']}\nB. {item['B']}\nC. {item['C']}\nD. {item['D']}\n答案："
+                user_prompt = f"{item[1]}\nA. {item[2]}\nB. {item[3]}\nC. {item[4]}\nD. {item[5]}\n答案："
 
                 # 调用Ollama API
                 model_answer = llm(model_name, user_prompt, stream=True, encoding=encoding, max_tokens=4096)
@@ -183,7 +210,7 @@ def test_split(model_name, is_inference=False):
                 """从模型输出中提取答案选项（A/B/C/D）"""
                 match = re.search(r"[A-D]", model_answer.upper())
                 extracted = match.group(0) if match else None
-                if extracted and extracted == item["answer"]:
+                if extracted and extracted == item[6]:
                     correct += 1
                 # except:
                 #     print("\nerror.")
@@ -198,14 +225,14 @@ def test_split(model_name, is_inference=False):
             order += 1
 
         print(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}")
-        with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
+        with open(f"assests/{model_name_write}-no_think.txt", "a", encoding="utf-8") as f:
             f.write(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}\n\n")
 
-    with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
+    with open(f"assests/{model_name_write}-no_think.txt", "a", encoding="utf-8") as f:
         f.write(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}\n\n")
     print(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}")
 
-test_split(model_name="qwen2.5:0.5b")
+# test_split(model_name="qwen2.5:0.5b")
 # test_split(model_name="qwen2.5:0.5b-instruct-fp16")
 # test_split(model_name="qwen2.5:1.5b")
 # test_split(model_name="qwen2.5:1.5b-instruct-fp16")
@@ -221,3 +248,12 @@ test_split(model_name="qwen2.5:0.5b")
 # test_split(model_name="deepseek-r1:1.5b")
 # test_split(model_name="deepseek-r1:1.5b-qwen-distill-fp16")
 # test_split(model_name="deepseek-r1-7b")
+
+test_split(model_name="qwen3:0.6b")
+test_split(model_name="qwen3:1.7b")
+test_split(model_name="qwen3:4b")
+test_split(model_name="qwen3:8b")
+
+# test_split(model_name="qwen3:14b")
+# test_split(model_name="qwen3:30b-a3b")
+# test_split(model_name="qwen3:32b")

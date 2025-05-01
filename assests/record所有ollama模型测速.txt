@@ -12,4 +12,12 @@ model: gemma3:4b-it-q8_0, speed: 38.72 token/s.
 model: gemma3:12b, speed: 10.87 token/s.
 model: deepseek-r1:1.5b-q4_K_M, speed: 130.0 token/s.
 model: deepseek-r1:1.5b-qwen-distill-fp16, speed: 71.63 token/s.
-model: deepseek-r1-7b-q4_K_M, speed: 47.01 token/s.model: phi4, speed: 7.37 token/s.
+model: deepseek-r1-7b-q4_K_M, speed: 47.01 token/s.
+model: phi4, speed: 7.37 token/s.
+model: qwen3:0.6b, output_tokens: 2567, duration:7.84s, speed: 327.42 token/s.
+model: qwen3:1.7b, output_tokens: 4141, duration:19.76s, speed: 209.56 token/s.
+model: qwen3:4b, output_tokens: 5515, duration:50.82s, speed: 108.52 token/s.
+model: qwen3:8b, output_tokens: 5889, duration:89.45s, speed: 65.84 token/s.
+model: qwen3:14b, output_tokens: 4583, duration:616.88s, speed: 7.43 token/s.
+model: qwen3:30b-a3b, output_tokens: 4887, duration:500.25s, speed: 9.77 token/s.
+model: qwen3:32b, output_tokens: 5066, duration:1783.87s, speed: 2.84 token/s.
