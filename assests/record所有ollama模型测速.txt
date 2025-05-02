@@ -21,3 +21,4 @@ model: qwen3:8b, output_tokens: 5889, duration:89.45s, speed: 65.84 token/s.
 model: qwen3:14b, output_tokens: 4583, duration:616.88s, speed: 7.43 token/s.
 model: qwen3:30b-a3b, output_tokens: 4887, duration:500.25s, speed: 9.77 token/s.
 model: qwen3:32b, output_tokens: 5066, duration:1783.87s, speed: 2.84 token/s.
+model: huihui_ai/qwen3-abliterated:8b-Q4_K_M, output_tokens: 4742, duration:68.9s, speed: 68.82 token/s.

@@ -5,35 +5,6 @@ from ollama import ChatResponse, Options
 import pandas as pd
 import numpy as np
 
-features_dev = Features({
-    'id': Value('int64'),
-    'question': Value('string'),
-    'A': Value('string'),
-    'B': Value('string'),
-    'C': Value('string'),
-    'D': Value('string'),
-    'answer': Value('string'),
-    'explanation': Value('string')
-})
-features_val = Features({
-    'id': Value('int64'),
-    'question': Value('string'),
-    'A': Value('string'),
-    'B': Value('string'),
-    'C': Value('string'),
-    'D': Value('string'),
-    'answer': Value('string')  # val 没有 explanation
-})
-features_test = Features({
-    'id': Value('int64'),
-    'question': Value('string'),
-    'A': Value('string'),
-    'B': Value('string'),
-    'C': Value('string'),
-    'D': Value('string')  # test 没有 answer 和 explanation
-})
-
-# pip install numpy pandas tiktoken  ollama datasets
 def llm(model, query, temperature=0, stream=True, encoding=tiktoken.encoding_for_model("gpt-4"), max_tokens=None):
     # return "A"
     options = Options(
@@ -49,7 +20,7 @@ def llm(model, query, temperature=0, stream=True, encoding=tiktoken.encoding_for
             # system_prompt的token数：44，1606道题，1606*44=70664
             {
                 "role": "system",
-                "content": "你是一个做题专家。请完成下列单项选择题。 /think",
+                "content": "你是一个做题专家。请完成下列单项选择题。",
             },
             {
                 "role": "user",
@@ -200,35 +171,36 @@ def test_split(model_name, is_inference=False):
             correct = 0
             total = len(dataset)
             for item in tqdm(dataset, desc=f"Processing"):
-                # try:
-                # 构造完整问题
-                user_prompt = f"{item[1]}\nA. {item[2]}\nB. {item[3]}\nC. {item[4]}\nD. {item[5]}\n答案："
+                try:
+                    # 构造完整问题
+                    user_prompt = f"{item[1]}\nA. {item[2]}\nB. {item[3]}\nC. {item[4]}\nD. {item[5]}\n答案："
 
-                # 调用Ollama API
-                model_answer = llm(model_name, user_prompt, stream=True, encoding=encoding, max_tokens=4096)
-                # 提取并验证答案
-                """从模型输出中提取答案选项（A/B/C/D）"""
-                match = re.search(r"[A-D]", model_answer.upper())
-                extracted = match.group(0) if match else None
-                if extracted and extracted == item[6]:
-                    correct += 1
-                # except:
-                #     print("\nerror.")
+                    # 调用Ollama API
+                    model_answer = llm(model_name, user_prompt, stream=True, encoding=encoding, max_tokens=4096)
+                    # 提取并验证答案
+                    """从模型输出中提取答案选项（A/B/C/D）"""
+                    match = re.search(r"[A-D]", model_answer.upper())
+                    extracted = match.group(0) if match else None
+                    if extracted and extracted == item[6]:
+                        correct += 1
+                except:
+                    print("\nerror.")
+                    total -= 1
             # 输出结果
             sum_correct += correct
             sum_total += total
             category_correct += correct
             category_total += total
             print(f"No.{order}: {category}-{task_list[i]}({task_chinese_name})数据集准确率: {correct}/{total} = {correct/total:.2%}")
-            with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
+            with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
                 f.write(f"No.{order}: {category}-{task_list[i]}({task_chinese_name})数据集准确率: {correct}/{total} = {correct/total:.2%}\n\n")
             order += 1
 
         print(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}")
-        with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
+        with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
             f.write(f"类别{category}平均准确率: {category_correct}/{category_total} = {category_correct/category_total:.2%}\n\n")
 
-    with open(f"assests/{model_name_write}-think.txt", "a", encoding="utf-8") as f:
+    with open(f"assests/{model_name_write}.txt", "a", encoding="utf-8") as f:
         f.write(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}\n\n")
     print(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}")
 
@@ -249,11 +221,11 @@ def test_split(model_name, is_inference=False):
 # test_split(model_name="deepseek-r1:1.5b-qwen-distill-fp16")
 # test_split(model_name="deepseek-r1-7b")
 
-test_split(model_name="qwen3:0.6b")
-test_split(model_name="qwen3:1.7b")
-test_split(model_name="qwen3:4b")
-test_split(model_name="qwen3:8b")
-
+# test_split(model_name="qwen3:0.6b")
+# test_split(model_name="qwen3:1.7b")
+# test_split(model_name="qwen3:4b")
+# test_split(model_name="qwen3:8b")
 # test_split(model_name="qwen3:14b")
 # test_split(model_name="qwen3:30b-a3b")
 # test_split(model_name="qwen3:32b")
+test_split(model_name="huihui_ai/qwen3-abliterated:8b-Q4_K_M")

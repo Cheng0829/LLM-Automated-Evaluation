@@ -1,39 +1,35 @@
-import os, time, sys, random, re
-from tqdm import tqdm
-import tiktoken
-from datetime import datetime
 from openai import OpenAI
-from datasets import load_dataset, concatenate_datasets
+from datasets import load_dataset, concatenate_datasets, Features, Value
+import re,requests, random, json, os, time, tiktoken, ollama
+from tqdm import tqdm
+from ollama import ChatResponse, Options
+import pandas as pd
+import numpy as np
 
 provider_list = {
     "aliyun": {
-        "api_key" : os.getenv("BALIYUN_API_KEY"),
+        "api_key" : os.getenv("ALIYUN_API_KEY"),
         "base_url" : "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "model_list": ["deepseek-v3", "deepseek-r1", "qwen-max-0125", "qwen-turbo-1101", "qwen-vl-max-0125", "qwq-plus"]
+        "model_list": ["deepseek-v3", "deepseek-r1", "qwen-max-0125", "qwen-turbo-1101", "qwen-vl-max-0125", "qwq-plus", "qwen3-235b-a22b", "qwen3-30b-a3b", "qwen3-32b", "qwen3-14b"]
     },
     "bytedance": {
         "api_key" : os.getenv("BYTEDANCE_API_KEY"),
         "base_url" : "https://ark.cn-beijing.volces.com/api/v3",
-        "model_list": ["deepseek-v3-241226", "deepseek-r1-250120", "doubao-1-5-pro-32k-250115", "doubao-1-5-pro-256k-250115"]
-    },
-    "baidu": {
-        "api_key" : os.getenv("BAIDUYUN_API_KEY"),
-        "base_url" : "https://qianfan.baidubce.com/v2",
-        "model_list": ["deepseek-v3", "deepseek-r1"]
-    },
-    "tencent": {
-        "api_key" : os.getenv("TENGXUNYUN_API_KEY"),
-        "base_url" : "https://api.lkeap.cloud.tencent.com/v1",
-        "model_list": ["deepseek-v3", "deepseek-r1"]
+        "model_list": ["deepseek-v3-241226", "deepseek-r1-250120", "doubao-1-5-pro-32k-250115", "doubao-1-5-pro-256k-250115", "deepseek-V3-250324"]
     },
     "deepseek": {
         "api_key" : os.getenv("DEEPSEEK_API_KEY"),
         "base_url" : "https://api.deepseek.com",
         "model_list": ["deepseek-chat", "deepseek-reasoner"]
     },
+    "openrouer": {
+        "api_key" : os.getenv("ROUER_API_KEY"),
+        "base_url" : "https://openrouter.ai/api/v1/",
+        "model_list": ["deepseek-chat", "deepseek-reasoner"]
+    },
 }
 
-def llm(provider_name, model_name, system_prompt="", user_prompt="", stream=True, temperature=0.6, encoding=tiktoken.encoding_for_model("gpt-4"), max_tokens=None):
+def llm(provider_name, model_name, system_prompt="", user_prompt="", stream=True, temperature=0.1, encoding=tiktoken.encoding_for_model("gpt-4"), max_tokens=None):
 
     old_timestamp = int(time.time()) # 发送时的时间戳
 
@@ -47,7 +43,7 @@ def llm(provider_name, model_name, system_prompt="", user_prompt="", stream=True
 
         messages = [
             # system_prompt的token数：44，1606道题，1606*44=70664
-            {'role': 'system', 'content': "你是一个做题专家。请完成下列单项选择题。\n\n## output format\n只能输出一个选项编号字母，不要有解析等其他任何内容。"},
+            {'role': 'system', 'content': "你是一个做题专家。请完成下列单项选择题。\n\n## output format\n只能输出一个选项编号字母，不要有解析等其他任何内容。 /no_think"},
             {'role': 'user', 'content': user_prompt},
         ],
         stream=stream,
@@ -167,7 +163,7 @@ def test_split(provider_name, model_name, is_inference=False):
     sum_correct = 0
     sum_total = 0
     order = 0
-    sum_tokens = 0
+    folder_path = r"D:\Code\LLM-Automated-Evaluation\ceval-exam"
     for category in task_map:
         # if category in ["Social_Science", "STEM"]:
         #     continue
@@ -181,17 +177,18 @@ def test_split(provider_name, model_name, is_inference=False):
             #     continue
             task_list[i] = task_list[i].lower()
             # try:
-            dataset_tmp = load_dataset(r"ceval/ceval-exam", name=task_list[i])
-            dataset = concatenate_datasets([dataset_tmp["dev"], dataset_tmp["val"]])
+            dev_file = pd.read_csv(os.path.join(folder_path, "dev", f"{task_list[i]}_dev.csv")).drop(columns=['explanation'])
+            val_file = pd.read_csv(os.path.join(folder_path, "val", f"{task_list[i]}_val.csv"))
+            dataset = pd.concat([dev_file, val_file], axis=0, ignore_index=True).values.tolist()
             # dataset = dataset_list[order]
             print(f"\nNo.{order}: {category}-{task_list[i]}({task_chinese_name})数据集加载完成, len(dataset)={len(dataset)}")
             # except:
                 # print(f"\nNo.{order}: {category}-{task_list[i]}({task_chinese_name})数据集加载失败")
                 # continue
-            if is_inference:
+            # if is_inference:
                 # dataset只选取其中最多2条数据
-                random_indices = random.sample(range(len(dataset)), 2)
-                dataset = dataset.select(random_indices)
+                # random_indices = random.sample(range(len(dataset)), 2)
+                # dataset = dataset.select(random_indices)
 
             # 初始化统计变量
             correct = 0
@@ -199,14 +196,14 @@ def test_split(provider_name, model_name, is_inference=False):
             for item in tqdm(dataset, desc=f"Processing"):
                 try:
                     # 构造完整问题
-                    user_prompt = f"{item['question']}\nA. {item['A']}\nB. {item['B']}\nC. {item['C']}\nD. {item['D']}\n答案："
+                    user_prompt = f"{item[1]}\nA. {item[2]}\nB. {item[3]}\nC. {item[4]}\nD. {item[5]}\n答案："
                     # 调用Ollama API
-                    model_answer = llm(provider_name, model_name, user_prompt=user_prompt, stream=True, temperature=0.6, encoding=encoding, max_tokens=4096)
+                    model_answer = llm(provider_name, model_name, user_prompt=user_prompt, stream=True, temperature=0.1, encoding=encoding, max_tokens=4096)
                     # 提取并验证答案
                     """从模型输出中提取答案选项（A/B/C/D）"""
                     match = re.search(r"[A-D]", model_answer.upper())
                     extracted = match.group(0) if match else None
-                    if extracted and extracted == item["answer"]:
+                    if extracted and extracted == item[6]:
                         correct += 1
                 except:
                     print("\nerror.")
@@ -229,8 +226,12 @@ def test_split(provider_name, model_name, is_inference=False):
         f.write(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}\n\n")
     print(f"总准确率: {sum_correct}/{sum_total} = {sum_correct/sum_total:.2%}")
 
-# test_split('bytedance', 'doubao-1-5-pro-32k-250115')
-# test_split('aliyun', 'qwen-turbo-1101')
-# test_split('aliyun', 'qwen2.5-7b-instruct')
-# test_split('bytedance', 'deepseek-v3-241226')
-# test_split('aliyun', 'qwen-max-0125')
+# test_split('aliyun', "qwen3-235b-a22b")
+# test_split('aliyun', "qwen3-14b")
+# test_split('aliyun', "qwen3-30b-a3b")
+# test_split('aliyun', "qwen3-32b")
+test_split('aliyun', "qwen3-14b")
+# test_split('aliyun', "qwen3-8b")
+# test_split('aliyun', "qwen3-4b")
+# test_split('aliyun', "qwen3-1.7b")
+# test_split('aliyun', "qwen3-0.6b")

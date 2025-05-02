@@ -79,6 +79,7 @@ if __name__ == "__main__":
         # "qwen3:14b",
         # "qwen3:30b-a3b",
         # "qwen3:32b",
+        "huihui_ai/qwen3-abliterated:8b-Q4_K_M",
     ]
     user_query_list = [
         "下列选项中，符合原癌基因概念的是____ A.正常基因, B.细胞癌基因, C.肿瘤抑制基因, D.凋亡调节基因 /no_think",
