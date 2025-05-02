@@ -96,3 +96,5 @@ No.44: Other-physician(医师资格)数据集准确率: 40/54 = 74.07%
 
 No.45: Other-tax_accountant(税务师)数据集准确率: 34/54 = 62.96%
 
+No.46: Other-accountant(注册会计师)数据集准确率: 40/54 = 74.07%
+
