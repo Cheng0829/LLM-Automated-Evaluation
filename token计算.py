@@ -7,30 +7,23 @@ from datasets import load_dataset, concatenate_datasets
 
 provider_list = {
     "aliyun": {
-        # "api_key" : os.getenv("BALIYUN_API_KEY"),
-        "api_key" : "sk-973a8ecb703f48db906c3cf2ebe7b3b6",
+        "api_key" : os.getenv("ALIYUN_API_KEY"),
         "base_url" : "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "model_list": ["deepseek-v3", "deepseek-r1", "qwen-max-0125", "qwen-turbo-1101", "qwen-vl-max-0125", "qwq-plus"]
+        "model_list": ["deepseek-v3", "deepseek-r1", "qwen-max-0125", "qwen-turbo-1101", "qwen-vl-max-0125", "qwq-plus", "qwen3-235b-a22b", "qwen3-30b-a3b", "qwen3-32b", "qwen3-14b"]
     },
     "bytedance": {
-        # "api_key" : os.getenv("BYTEDANCE_API_KEY"),
-        "api_key" : "6c693abd-8e7c-4227-abaa-972200f7e7d5",
+        "api_key" : os.getenv("BYTEDANCE_API_KEY"),
         "base_url" : "https://ark.cn-beijing.volces.com/api/v3",
-        "model_list": ["deepseek-v3-241226", "deepseek-r1-250120", "doubao-1-5-pro-32k-250115", "doubao-1-5-pro-256k-250115"]
-    },
-    "baidu": {
-        "api_key" : os.getenv("BAIDUYUN_API_KEY"),
-        "base_url" : "https://qianfan.baidubce.com/v2",
-        "model_list": ["deepseek-v3", "deepseek-r1"]
-    },
-    "tencent": {
-        "api_key" : os.getenv("TENGXUNYUN_API_KEY"),
-        "base_url" : "https://api.lkeap.cloud.tencent.com/v1",
-        "model_list": ["deepseek-v3", "deepseek-r1"]
+        "model_list": ["deepseek-v3-241226", "deepseek-r1-250120", "doubao-1-5-pro-32k-250115", "doubao-1-5-pro-256k-250115", "deepseek-V3-250324"]
     },
     "deepseek": {
         "api_key" : os.getenv("DEEPSEEK_API_KEY"),
         "base_url" : "https://api.deepseek.com",
+        "model_list": ["deepseek-chat", "deepseek-reasoner"]
+    },
+    "openrouer": {
+        "api_key" : os.getenv("ROUER_API_KEY"),
+        "base_url" : "https://openrouter.ai/api/v1/",
         "model_list": ["deepseek-chat", "deepseek-reasoner"]
     },
 }
